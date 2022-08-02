@@ -12,8 +12,8 @@ Neredeyse 8,10 saattir bu projeyle uğraşıyorum. kullandığım yöntemler muh
  -   alert(5);
  - }
  - else{
- -    <?php echo"hello" ?>
+ -  echo"hello" 
  - }
-
+ - (php taglarini bilerek kaldırdım)
 else bloğunun yorumlanmaması gerek bu durumda ama echo"hello" kodu ekrana basılıyor.
 Bunlar benim gözlemledğim şeyler. Tamamen yanlışta olabilirler. Sadece nerede hata yaptığımı göremiyorum ve gözlemlediğim sorunlar bunlar.Kim bilir göremedğim ne kadar sorun var :)
