@@ -29,6 +29,10 @@
                             <input style="text-align: center;" type="text" class="form-control" id="word" name="word" placeholder="" required>
                         </div>
                         <div class="mb-4">
+                            <label for="clue" class="form-label"><b>Arayana kısa bir ipucu ver</b></label>
+                            <input style="text-align: center;" type="text" class="form-control" id="clue" name="clue" placeholder="" required>
+                        </div>
+                        <div class="mb-4">
                             <label for="password" class="form-label"><b>Kelimeyi unutman durumunda sana kelimeyi hatırlatabilirim.<br>Bunun için bir oyun kurucu şifresi belirlemen gerek.<br>(Lütfen şifreyi unutma)</b></label>
                             <input style="text-align: center;" type="password" class="form-control" id="password" name="password" placeholder="" required>
                         </div>
@@ -41,9 +45,10 @@
     </section>
 
     <?php
-    if (isset($_POST["word"]) && isset($_POST["password"])) {
+    if (isset($_POST["word"]) && isset($_POST["password"]) && isset($_POST["clue"])) {
         $_SESSION["word"] = $_POST["word"];
         $_SESSION["password"] = $_POST["password"];
+        $_SESSION["clue"] = $_POST["clue"];
         echo "<script>alert('Oyun Sayfasına Yönlendiriliyorsunuz. lütfen tamam butonuna basınız.');</script>";
         echo'<script>window.location.href = "game.php";</script>';
     }

@@ -1,6 +1,7 @@
 <?php
 session_start();
-
+//Kelime seçimi yapılmadan sayfaya girilemesin istiyorum
+//$_SESSION["word"] verisi null durumda olursa sayfa word.php sayfasına yönlenecek
 if ($_SESSION["word"] == null) {
   echo "<script>alert('Kelime belirlemediniz. Kelime oluşturma sayfasına yönlendiriliyorsunuz.');</script>";
   echo '<script>window.location.href = "word.php";</script>';
@@ -27,21 +28,32 @@ if ($_SESSION["word"] == null) {
 
 <body style="font-family:  'Raleway', sans-serif;padding-top:5px">
   <section class="p-5 text-center homepage">
-    <div class="container mt-5">
+    <div class="container mt-3">
       <div class="row">
-        <div class="col-md-6 mx-auto">
+        <div class="col-md-2 mx-auto">
           <div class="mb-4">
             <label for="input_password" class="form-label"><b>Oyun Kurucu Şifresi</b></label>
-            <input type="text" class="form-control" id="input_password" placeholder="">
+            <input type="password" class="form-control" id="input_password" placeholder="">
           </div>
-          <div class="mb-3">
-            <button class="btn btn-success btn-lg mb-5" onclick="get_passw();">Kelimeyi Hatırla</button>
+          <div class="">
+            <button class="btn btn-success btn-lg mb-2" onclick="get_passw();">Kelimeyi Hatırla</button>
+          </div>
+          <div class="">
+            <button style="color: black;" class="btn btn-success btn-lg mb-3 bg-warning" onclick="keepPlaying();">Yeni Oyun</button>
+          </div>
+          <div class="mb-4">
+            <label for="" class="form-label mb-3 text-danger"><h3>İpucu</h3></label>
+            <h5><?=$_SESSION["clue"] ?></h5>
           </div>
         </div>
       </div>
   </section>
 
   <script>
+    function keepPlaying(){
+      window.location.href="again.php";
+    }
+    //php session da tutulan word verisini html olarak basıp değeri javascript e atıyorum.
     var word = "<?= $_SESSION["word"] ?>";
 
     function get_passw() {
@@ -54,17 +66,31 @@ if ($_SESSION["word"] == null) {
       }
     }
   </script>
-  <script>
-  </script>
+
   <section class="p-5 text-center homepage">
     <div class="container mt-5">
       <div class="row">
-        <div class="col-md-6 mx-auto">
+        <div class="col-md-4 mx-auto">
+          <div class="">
+            <img id="hanged.man" src="" alt="">
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <section class="p-5 text-center homepage">
+    <div class="container mt-1">
+      <div class="row">
+        <div class="col-md-2 mx-auto">
           <?php
+          //Kullanıcı kelime sayısı kadar deneme yapacak. Bu nedenle seçilen kelimeyi parçalayıp uzunluğu miktarında
+          //döngü oluşturuyorum.
+          //Her inputtan farklı kelime alınacağından ve bunların sınamaları yapılacağından benzersiz id leri olmalı o nedenle i değişkeninin değerini
+          //id attribute une basıyorum. 
           $word = $_SESSION["word"];
           $str_word = str_split($word);
           for ($i = 0; $i < count($str_word); $i++) {
-            echo '<input type="text" class="form-control" id="' . $i . '">';
+            echo '<input style="text-align: center;" type="text" class="form-control" id="' . $i . '">';
           }
           ?>
         </div>
@@ -72,53 +98,96 @@ if ($_SESSION["word"] == null) {
     </div>
   </section>
 
-  <section class="p-1 text-center homepage">
-    <div class="container mt-5">
+  <section class=" text-center homepage">
+    <div class="container">
       <div class="row">
-        <div class="col-md-6 mx-auto">
+        <div class="col-md-2 mx-auto">
           <div class="mb-3">
             <button class="btn btn-success btn-lg mb-5" onclick="answer();">Cevapla</button>
           </div>
         </div>
       </div>
   </section>
-  <script>
-     <?php
-      if (isset($_SESSION["can"])) {
-        $life = $_SESSION["can"];
-      } else {
-        $life = 10;
-      }
-      ?>
-    function answer() {
-      var i, split_word, js_new_Life, jslife, php_output_hata_onleyici;
-      split_word = word.split("");
-      jslife = <?= $life ?>;
-      for (i = 0; i < split_word.length; i++) {
-        if (document.getElementById(i).value == split_word[i]) {
-          document.getElementById(i).style.backgroundColor = "green";
 
+  <script>
+    var can = 10;
+
+    function answer() {
+      var i, split_word, js_new_Life, jslife, php_output_hata_onleyici = "";
+      split_word = word.split("");
+      var super_gamer = [];
+
+      for (i = 0; i < split_word.length; i++) {
+        super_gamer.push(String(document.getElementById(i).value)); //inpulardan gelen veriyi bir arrayda topluyorum.
+      }
+
+      //session verisini silmek için yönlendrime yaparken önce again.php ye gönderiyorum. Oradan word.php ye 
+
+
+      for (i = 0; i < split_word.length; i++) { //dizi en optimal şekilde belirlenen kelimenin harf sayısı kadar dönüyor. ne eksik ne fazla.
+        if (document.getElementById(i).value == split_word[i]) { //i değişkeni ile input id lerimin değerlerine ulaşıp sınamalarını yapıyorum.
+          document.getElementById(i).style.backgroundColor = "green";
         } else if (document.getElementById(i).value == "") {
           document.getElementById(i).style.backgroundColor = "white";
         } else {
           document.getElementById(i).style.backgroundColor = "red";
-          <?php $new_life = $life - 1; ?>
-          <?php $_SESSION["can"] = $new_life; ?>   //5,6 saat sonra: ben karar mekanizmalarına php gömüyorum ama san ki if else leri php sallamıyor galiba
-
-          js_new_Life = jslife - 1; //gozlemledğim kadarı ile html olarak basılmayan değerler js tarafından algılanmıyor. O yüzden php değerlerini bastırıp js değişkenlerine atıyorum.
-
+          can -= 1;
         }
       }
-      alert("kalan can : " + <?= $life ?>);
+      //inputlardan gelen dizide toplanmış veriyi tek parça string yapıyorum.
+      if (super_gamer.join('') == word) { //Bu string kullanıcın başta belirlemiş olduğu word e eşitse oyunu kazanıyor ve yeni oyun için word.php sayfasına gidiyor. 
+        alert("Kelimeyi buldun Mükemmelsin ❤️. Tamam butonuna bastıktan 7 saniye sonra kelime seçim sayfasına göndereceğim seni. Böylelikle yeni bir kelime seçip oyuna devam edebilirsin :)");
+        setTimeout(function() {
+          window.location.assign("again.php");
+          //7 saniye sonra yönlenecek
+        }, 7000);
+      }
 
-     
+      //can değişkeninin durumuna göre hazırladığım birbirini takip eden görsellerim basılıyor.
+      switch (can) {
+        case 9:
+          document.getElementById("hanged.man").src = "hanged_image/hanged1.png";
+          break;
+        case 8:
+          document.getElementById("hanged.man").src = "hanged_image/hanged2.png";
+          break;
+        case 7:
+          document.getElementById("hanged.man").src = "hanged_image/hanged3.png";
+          break;
+        case 6:
+          document.getElementById("hanged.man").src = "hanged_image/hanged4.png";
+          break;
+        case 5:
+          document.getElementById("hanged.man").src = "hanged_image/hanged5.png";
+          break;
+        case 4:
+          document.getElementById("hanged.man").src = "hanged_image/hanged6.png";
+          break;
+        case 3:
+          document.getElementById("hanged.man").src = "hanged_image/hanged7.png";
+          break;
+        case 2:
+          document.getElementById("hanged.man").src = "hanged_image/hanged8.png";
+          break;
+        case 1:
+          document.getElementById("hanged.man").src = "hanged_image/hanged9.png";
+          break;
+        case 0:
+          document.getElementById("hanged.man").src = "hanged_image/hanged10.png";
+          break;
+        default:
+          document.getElementById("hanged.man").src = "";
+          break;
+          break;
+      }
+      if (can <= 0) {
+        alert('Üzgünüm adamı ipten kurtaramadın 😭 . Aradığın kelime : " ' + word + ' " idi. Tamam butonuna bastıktan sonra, 7 saniye içinde kelime seçim sayfasına gönderiyorum seni. Böylelikle yeni bir kelime seçip yeni oyunda adamı ipten kurtarabilirsin :)')
+        setTimeout(function() {
+          window.location.assign("again.php");
+          //7 saniye sonra yönlenecek
+        }, 7000);
+      }
     }
-    <?php 
-     if ($new_life <= 0) {
-      echo' alert("Oyun Bitti Başaramadın. Aradığın kelime : " + word + " idi.")';
-      unset($_SESSION["can"]);
-    }
-    ?>
   </script>
 
 
