@@ -57,7 +57,23 @@ if ($_SESSION["word"] == null) {
     }
     //php session da tutulan word verisini html olarak basıp değeri javascript e atıyorum.
     var word = "<?= $_SESSION["word"] ?>";
-    Upword = word.toUpperCase();
+
+    String.prototype.turkishToUpper = function(par1) {
+      var string = par1;
+      var letters = {
+        "i": "İ",
+        "ş": "Ş",
+        "ğ": "Ğ",
+        "ü": "Ü",
+        "ö": "Ö",
+        "ç": "Ç",
+        "ı": "I"
+      };
+      string = string.replace(/(([iışğüçö]))/g, function(letter) {
+        return letters[letter];
+      })
+      return string.toUpperCase();
+    }
 
     function get_passw() {
       var get_psw = "<?= $_SESSION["password"] ?>";
@@ -87,8 +103,8 @@ if ($_SESSION["word"] == null) {
           //döngü oluşturuyorum.
           //Her inputtan farklı kelime alınacağından ve bunların sınamaları yapılacağından benzersiz id leri olmalı o nedenle i değişkeninin değerini
           //id attribute une basıyorum. 
-          $word = $_SESSION["word"];
-          $str_word = str_split($word);
+          $word = mb_strtoupper($_SESSION["word"], "UTF-8");
+          $str_word = mb_str_split($word);
           for ($i = 0; $i < count($str_word); $i++) {
             echo '<input style="text-align: center;" type="text" class="form-control" id="' . $i . '">';
           }
@@ -113,21 +129,22 @@ if ($_SESSION["word"] == null) {
     var can = 10;
 
     function answer() {
-      var i, split_word;
+      var i, split_word,Upword;
+      Upword=String.prototype.turkishToUpper(word);
       split_word = Upword.split("");
       var super_gamer = [];
 
       for (i = 0; i < split_word.length; i++) {
-        super_gamer.push(String(document.getElementById(i).value).toUpperCase()); //inpulardan gelen veriyi bir arrayda topluyorum.
+        super_gamer.push(String.prototype.turkishToUpper(document.getElementById(i).value)); //inpulardan gelen veriyi bir arrayda topluyorum.
       }
 
 
       //session verisini silmek için yönlendrime yaparken önce again.php ye gönderiyorum. Oradan word.php ye 
 
       for (i = 0; i < split_word.length; i++) { //dizi en optimal şekilde belirlenen kelimenin harf sayısı kadar dönüyor. ne eksik ne fazla.
-        if (document.getElementById(i).value.toUpperCase() == split_word[i]) { //i değişkeni ile input id lerimin değerlerine ulaşıp sınamalarını yapıyorum.
+        if (String.prototype.turkishToUpper(document.getElementById(i).value) == split_word[i]) { //i değişkeni ile input id lerimin değerlerine ulaşıp sınamalarını yapıyorum.
           document.getElementById(i).style.backgroundColor = "green";
-        } else if (document.getElementById(i).value.toUpperCase() == "") {
+        } else if (String.prototype.turkishToUpper(document.getElementById(i).value) == "") {
           document.getElementById(i).style.backgroundColor = "white";
         } else {
           document.getElementById(i).style.backgroundColor = "red";
