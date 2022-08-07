@@ -94,6 +94,7 @@ if ($_SESSION["word"] == null) {
         </figure>
       </div>
   </section>
+
   <section class="p-3 text-center homepage">
     <div class="container ">
       <div class="row">
@@ -103,12 +104,23 @@ if ($_SESSION["word"] == null) {
           //döngü oluşturuyorum.
           //Her inputtan farklı kelime alınacağından ve bunların sınamaları yapılacağından benzersiz id leri olmalı o nedenle i değişkeninin değerini
           //id attribute une basıyorum. 
+          //mb_str_split fonksiyonu xampp te çalışıyor fakat senkronet(can sıkıcı firma) hostumda çalışmıyor. sanırım php sürümünden kaynaklı.
           $word = mb_strtoupper($_SESSION["word"], "UTF-8");
-          $str_word = mb_str_split($word);
-          for ($i = 0; $i < count($str_word); $i++) {
-            echo '<input style="text-align: center;" type="text" class="form-control" id="' . $i . '">';
+          function str_split_unicode($str, $length = 1)
+          {
+            $tmp = preg_split('~~u', $str, -1, PREG_SPLIT_NO_EMPTY);
+            if ($length > 1) {
+              $chunks = array_chunk($tmp, $length);
+              foreach ($chunks as $i => $chunk) {
+                $chunks[$i] = join('', (array) $chunk);
+              }
+              $tmp = $chunks;
+            }
+            return $tmp;
           }
-          ?>
+          for ($i = 0; $i < count(str_split_unicode($word, 1)); $i++) { ?>
+            <input style="text-align: center;" type="text" class="form-control" id="<?= $i ?>">
+          <?php } ?>
         </div>
       </div>
     </div>
@@ -129,15 +141,14 @@ if ($_SESSION["word"] == null) {
     var can = 10;
 
     function answer() {
-      var i, split_word,Upword;
-      Upword=String.prototype.turkishToUpper(word);
+      var i, split_word, Upword;
+      Upword = String.prototype.turkishToUpper(word);
       split_word = Upword.split("");
       var super_gamer = [];
 
       for (i = 0; i < split_word.length; i++) {
         super_gamer.push(String.prototype.turkishToUpper(document.getElementById(i).value)); //inpulardan gelen veriyi bir arrayda topluyorum.
       }
-
 
       //session verisini silmek için yönlendrime yaparken önce again.php ye gönderiyorum. Oradan word.php ye 
 
