@@ -42,19 +42,22 @@ if ($_SESSION["word"] == null) {
             <button style="color: black;" class="btn btn-success btn-lg mb-3 bg-warning" onclick="keepPlaying();">Yeni Oyun</button>
           </div>
           <div class="mb-4">
-            <label for="" class="form-label mb-3 text-danger"><h3>İpucu</h3></label>
-            <h5><?=$_SESSION["clue"] ?></h5>
+            <label for="" class="form-label mb-3 text-danger">
+              <h3>İpucu</h3>
+            </label>
+            <h5><?= $_SESSION["clue"] ?></h5>
           </div>
         </div>
       </div>
   </section>
 
   <script>
-    function keepPlaying(){
-      window.location.href="again.php";
+    function keepPlaying() {
+      window.location.href = "again.php";
     }
     //php session da tutulan word verisini html olarak basıp değeri javascript e atıyorum.
     var word = "<?= $_SESSION["word"] ?>";
+    Upword = word.toUpperCase();
 
     function get_passw() {
       var get_psw = "<?= $_SESSION["password"] ?>";
@@ -67,19 +70,16 @@ if ($_SESSION["word"] == null) {
     }
   </script>
 
-  <section class="p-5 text-center homepage">
-    <div class="container mt-5">
+  <section class="p-3 text-center homepage mx-auto">
+    <div class="container ">
       <div class="row">
-        <div class="col-md-4 mx-auto">
-          <div class="">
-            <img id="hanged.man" src="" alt="">
-          </div>
-        </div>
+        <figure class="col-md-3 mx-auto">
+          <img class="figure-img img-fluid rounded" id="hanged.man" src="" alt="">
+        </figure>
       </div>
   </section>
-
-  <section class="p-5 text-center homepage">
-    <div class="container mt-1">
+  <section class="p-3 text-center homepage">
+    <div class="container ">
       <div class="row">
         <div class="col-md-2 mx-auto">
           <?php
@@ -113,30 +113,40 @@ if ($_SESSION["word"] == null) {
     var can = 10;
 
     function answer() {
-      var i, split_word, js_new_Life, jslife, php_output_hata_onleyici = "";
-      split_word = word.split("");
+      var i, split_word;
+      split_word = Upword.split("");
       var super_gamer = [];
 
       for (i = 0; i < split_word.length; i++) {
-        super_gamer.push(String(document.getElementById(i).value)); //inpulardan gelen veriyi bir arrayda topluyorum.
+        super_gamer.push(String(document.getElementById(i).value).toUpperCase()); //inpulardan gelen veriyi bir arrayda topluyorum.
       }
+
 
       //session verisini silmek için yönlendrime yaparken önce again.php ye gönderiyorum. Oradan word.php ye 
 
-
       for (i = 0; i < split_word.length; i++) { //dizi en optimal şekilde belirlenen kelimenin harf sayısı kadar dönüyor. ne eksik ne fazla.
-        if (document.getElementById(i).value == split_word[i]) { //i değişkeni ile input id lerimin değerlerine ulaşıp sınamalarını yapıyorum.
+        if (document.getElementById(i).value.toUpperCase() == split_word[i]) { //i değişkeni ile input id lerimin değerlerine ulaşıp sınamalarını yapıyorum.
           document.getElementById(i).style.backgroundColor = "green";
-        } else if (document.getElementById(i).value == "") {
+        } else if (document.getElementById(i).value.toUpperCase() == "") {
           document.getElementById(i).style.backgroundColor = "white";
         } else {
           document.getElementById(i).style.backgroundColor = "red";
           can -= 1;
         }
       }
+
       //inputlardan gelen dizide toplanmış veriyi tek parça string yapıyorum.
-      if (super_gamer.join('') == word) { //Bu string kullanıcın başta belirlemiş olduğu word e eşitse oyunu kazanıyor ve yeni oyun için word.php sayfasına gidiyor. 
-        alert("Kelimeyi buldun Mükemmelsin ❤️. Tamam butonuna bastıktan 7 saniye sonra kelime seçim sayfasına göndereceğim seni. Böylelikle yeni bir kelime seçip oyuna devam edebilirsin :)");
+      if (can == 10 && super_gamer.join('') == Upword) { //Bu string kullanıcın başta belirlemiş olduğu word e eşitse oyunu kazanıyor ve yeni oyun için word.php sayfasına gidiyor. 
+        alert("Vay canına tekte buldun bu oyunda çok iyisin ❤️. Tamam butonuna bastıktan 7 saniye sonra kelime seçim sayfasına göndereceğim seni. Böylelikle yeni bir kelime seçip oyuna devam edebilirsin :)");
+        setTimeout(function() {
+          window.location.assign("again.php");
+          //7 saniye sonra yönlenecek
+        }, 7000);
+      }
+
+      //inputlardan gelen dizide toplanmış veriyi tek parça string yapıyorum.
+      if (super_gamer.join('') == Upword && can < 10 && can > 0) { //Bu string kullanıcın başta belirlemiş olduğu word e eşitse oyunu kazanıyor ve yeni oyun için word.php sayfasına gidiyor. 
+        alert("Kelimeyi buldun 🤓. Tamam butonuna bastıktan 7 saniye sonra kelime seçim sayfasına göndereceğim seni. Böylelikle yeni bir kelime seçip oyuna devam edebilirsin :)");
         setTimeout(function() {
           window.location.assign("again.php");
           //7 saniye sonra yönlenecek
@@ -146,34 +156,34 @@ if ($_SESSION["word"] == null) {
       //can değişkeninin durumuna göre hazırladığım birbirini takip eden görsellerim basılıyor.
       switch (can) {
         case 9:
-          document.getElementById("hanged.man").src = "hanged_image/hanged1.png";
+          document.getElementById("hanged.man").src = "hanged_img/hanged1.png";
           break;
         case 8:
-          document.getElementById("hanged.man").src = "hanged_image/hanged2.png";
+          document.getElementById("hanged.man").src = "hanged_img/hanged2.png";
           break;
         case 7:
-          document.getElementById("hanged.man").src = "hanged_image/hanged3.png";
+          document.getElementById("hanged.man").src = "hanged_img/hanged3.png";
           break;
         case 6:
-          document.getElementById("hanged.man").src = "hanged_image/hanged4.png";
+          document.getElementById("hanged.man").src = "hanged_img/hanged4.png";
           break;
         case 5:
-          document.getElementById("hanged.man").src = "hanged_image/hanged5.png";
+          document.getElementById("hanged.man").src = "hanged_img/hanged5.png";
           break;
         case 4:
-          document.getElementById("hanged.man").src = "hanged_image/hanged6.png";
+          document.getElementById("hanged.man").src = "hanged_img/hanged6.png";
           break;
         case 3:
-          document.getElementById("hanged.man").src = "hanged_image/hanged7.png";
+          document.getElementById("hanged.man").src = "hanged_img/hanged7.png";
           break;
         case 2:
-          document.getElementById("hanged.man").src = "hanged_image/hanged8.png";
+          document.getElementById("hanged.man").src = "hanged_img/hanged8.png";
           break;
         case 1:
-          document.getElementById("hanged.man").src = "hanged_image/hanged9.png";
+          document.getElementById("hanged.man").src = "hanged_img/hanged9.png";
           break;
         case 0:
-          document.getElementById("hanged.man").src = "hanged_image/hanged10.png";
+          document.getElementById("hanged.man").src = "hanged_img/hanged10.png";
           break;
         default:
           document.getElementById("hanged.man").src = "";
